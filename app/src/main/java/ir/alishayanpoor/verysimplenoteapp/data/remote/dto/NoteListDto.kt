@@ -2,6 +2,7 @@ package ir.alishayanpoor.verysimplenoteapp.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName
+import ir.alishayanpoor.verysimplenoteapp.domain.model.Note
 
 data class NoteListDto(
     @SerializedName("success")
@@ -34,5 +35,22 @@ data class NoteListDto(
                 val tag: String
             )
         }
+    }
+
+    fun toNoteList(): List<Note> {
+        val notes = mutableListOf<Note>()
+        data?.notes?.forEach {
+            val tags = mutableListOf<String>()
+            it.tags.forEach { tag ->
+                tags.add(tag.tag)
+            }
+            val note = Note(
+                it.title,
+                it.body,
+                tags
+            )
+            notes.add(note)
+        }
+        return notes.toList()
     }
 }
