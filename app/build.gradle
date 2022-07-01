@@ -69,6 +69,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:2.38.1"
