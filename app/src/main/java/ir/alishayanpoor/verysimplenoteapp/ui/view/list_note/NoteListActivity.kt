@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 import ir.alishayanpoor.verysimplenoteapp.ui.theme.VerySimpleNoteAppTheme
 import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.NewNoteActivity
@@ -70,24 +72,35 @@ class NoteListActivity : ComponentActivity() {
                         .size(40.dp),
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    viewModel.state.noteList.forEach { note ->
-                        item {
-                            Text(
-                                text = note.title,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                SwipeRefresh(
+                    modifier = Modifier.fillMaxSize(),
+                    state = rememberSwipeRefreshState(viewModel.state.isLoading),
+                    onRefresh = { viewModel.loadNotes() }) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            viewModel.state.noteList.forEach { note ->
+                                item {
+                                    Text(
+                                        text = note.title,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd),
+                            onClick = { viewModel.addNewNote() },
+                        ) {
+                            Icon(Icons.Filled.Add, "Add new note")
                         }
                     }
-                }
-                FloatingActionButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd),
-                    onClick = { viewModel.addNewNote() },
-                ) {
-                    Icon(Icons.Filled.Add, "Add new note")
                 }
             }
         }
