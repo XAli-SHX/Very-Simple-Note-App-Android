@@ -91,4 +91,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
     // Gson
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    // Swipe refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.11-rc"
 }
