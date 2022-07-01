@@ -1,4 +1,4 @@
-package ir.alishayanpoor.verysimplenoteapp
+package ir.alishayanpoor.verysimplenoteapp.ui.view.list_note
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
