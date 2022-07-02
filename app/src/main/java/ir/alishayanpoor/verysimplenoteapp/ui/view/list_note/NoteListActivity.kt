@@ -13,10 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -85,23 +82,37 @@ class NoteListActivity : ComponentActivity() {
                 .fillMaxSize()
                 .padding(20.dp),
         ) {
-            if (viewModel.state.hasError()) {
-                Text(text = viewModel.state.error.toString())
-            } else if (viewModel.state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(40.dp),
-                )
-            } else {
-                SwipeRefresh(
-                    modifier = Modifier.fillMaxSize(),
-                    state = rememberSwipeRefreshState(viewModel.state.isLoading),
-                    onRefresh = { viewModel.loadNotes() }) {
+            SwipeRefresh(
+                modifier = Modifier.fillMaxSize(),
+                state = rememberSwipeRefreshState(false),
+                onRefresh = { viewModel.loadNotes() }) {
+                if (viewModel.state.hasError()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = viewModel.state.error.toString()
+                        )
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { viewModel.loadNotes() }
+                        ) {
+                            Text(text = "Retry")
+                        }
+                    }
+                } else if (viewModel.state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(40.dp),
+                    )
+                } else {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(20.dp),
+                            .padding(12.dp),
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
@@ -110,12 +121,12 @@ class NoteListActivity : ComponentActivity() {
                                 item {
                                     Box(
                                         modifier = Modifier
+                                            .clickable { viewModel.editNote(index) }
                                             .border(
                                                 width = 0.8.dp,
                                                 color = Color.Gray.copy(alpha = 0.5f),
                                                 shape = RoundedCornerShape(12.dp)
                                             )
-                                            .clickable { viewModel.editNote(index) }
                                     ) {
                                         Text(
                                             text = note.title,
