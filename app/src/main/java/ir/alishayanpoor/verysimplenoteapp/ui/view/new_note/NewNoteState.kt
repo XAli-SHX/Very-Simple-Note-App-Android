@@ -6,5 +6,6 @@ data class NewNoteState(
     val tag: String = "",
     val tags: List<String> = emptyList(),
     val isSendingNote: Boolean = false,
-    val error: String? = null
+    val titleError: String? = null,
+    val bodyError: String? = null,
 )
