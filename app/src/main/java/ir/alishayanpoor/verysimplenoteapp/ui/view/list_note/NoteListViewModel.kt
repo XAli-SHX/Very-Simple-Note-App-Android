@@ -50,4 +50,11 @@ class NoteListViewModel @Inject constructor(
             event.send(NoteListEvent.CreateNewNote)
         }
     }
+
+    fun editNote(index: Int) {
+        viewModelScope.launch {
+            val note = state.noteList[index]
+            event.send(NoteListEvent.ViewNote(note))
+        }
+    }
 }

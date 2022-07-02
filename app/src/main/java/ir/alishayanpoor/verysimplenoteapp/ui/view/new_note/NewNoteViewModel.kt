@@ -37,6 +37,8 @@ class NewNoteViewModel @Inject constructor(
     }
 
     private fun removeTag(index: Int) {
+        if (state.viewMode)
+            return
         val prevTags = state.tags.toMutableList()
         prevTags.removeAt(index)
         state = state.copy(
@@ -104,6 +106,15 @@ class NewNoteViewModel @Inject constructor(
     private fun enterBody(body: String) {
         state = state.copy(
             body = body
+        )
+    }
+
+    fun setViewMode(inViewMode: Boolean, note: Note?) {
+        state = state.copy(
+            viewMode = inViewMode,
+            title = note?.title ?: "",
+            body = note?.body ?: "",
+            tags = note?.tags ?: emptyList(),
         )
     }
 }

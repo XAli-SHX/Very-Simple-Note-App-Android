@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +29,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 import ir.alishayanpoor.verysimplenoteapp.ui.theme.VerySimpleNoteAppTheme
-import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.NewNoteActivity
+import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.ViewOrNewNoteActivity
 import ir.alishayanpoor.verysimplenoteapp.util.collectLatestLifecycleFlowWhenStarted
 import ir.alishayanpoor.verysimplenoteapp.util.exhaustive
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -60,7 +61,15 @@ class NoteListActivity : ComponentActivity() {
         ) { event ->
             when (event) {
                 NoteListEvent.CreateNewNote -> {
-                    Intent(this, NewNoteActivity::class.java).also {
+                    Intent(this, ViewOrNewNoteActivity::class.java).also {
+                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, false)
+                        newNoteResultLauncher.launch(it)
+                    }
+                }
+                is NoteListEvent.ViewNote -> {
+                    Intent(this, ViewOrNewNoteActivity::class.java).also {
+                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, true)
+                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_NOTE, event.note)
                         newNoteResultLauncher.launch(it)
                     }
                 }
@@ -106,6 +115,7 @@ class NoteListActivity : ComponentActivity() {
                                                 color = Color.Gray.copy(alpha = 0.5f),
                                                 shape = RoundedCornerShape(12.dp)
                                             )
+                                            .clickable { viewModel.editNote(index) }
                                     ) {
                                         Text(
                                             text = note.title,

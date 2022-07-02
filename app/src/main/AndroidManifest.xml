@@ -17,7 +17,7 @@
         android:theme="@style/Theme.VerySimpleNoteApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.view.new_note.NewNoteActivity"
+            android:name=".ui.view.new_note.ViewOrNewNoteActivity"
             android:exported="false"
             android:label="@string/title_activity_new_note"
             android:theme="@style/Theme.VerySimpleNoteApp" />
