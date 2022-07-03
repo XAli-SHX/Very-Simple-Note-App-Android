@@ -18,4 +18,12 @@ interface VerySimpleNoteAppApi {
     suspend fun newNote(
         @Body newNoteDto: NewNoteDto
     ): Response<JsonObject>
+
+    @POST("note/edit/{id}")
+    suspend fun editNote(
+        @Body newNoteDto: NewNoteDto
+    ): Response<JsonObject>
+
+    @POST("note/delete/{id}")
+    suspend fun deleteNote(): Response<JsonObject>
 }

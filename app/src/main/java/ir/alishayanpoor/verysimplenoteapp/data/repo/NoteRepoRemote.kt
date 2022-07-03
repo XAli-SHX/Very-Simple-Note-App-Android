@@ -33,4 +33,28 @@ class NoteRepoRemote @Inject constructor(
         }
         throw Exception("Some thing went wrong")
     }
+
+    @Throws(Exception::class)
+    override suspend fun deleteNote(id: Int) {
+        val response = api.deleteNote()
+        if (response.isSuccessful) {
+            val result = response.body()
+            result?.let {
+                return
+            }
+        }
+        throw Exception("Some thing went wrong")
+    }
+
+    @Throws(Exception::class)
+    override suspend fun editNote(id: Int, note: Note) {
+        val response = api.editNote(NewNoteDto.fromNote(note))
+        if (response.isSuccessful) {
+            val result = response.body()
+            result?.let {
+                return
+            }
+        }
+        throw Exception("Some thing went wrong")
+    }
 }
