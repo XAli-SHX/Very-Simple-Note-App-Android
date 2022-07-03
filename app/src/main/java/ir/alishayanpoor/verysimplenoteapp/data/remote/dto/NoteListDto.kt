@@ -45,6 +45,7 @@ data class NoteListDto(
                 tags.add(tag.tag)
             }
             val note = Note(
+                it.id,
                 it.title,
                 it.body,
                 tags
