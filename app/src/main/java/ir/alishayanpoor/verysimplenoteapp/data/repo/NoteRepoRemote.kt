@@ -36,7 +36,7 @@ class NoteRepoRemote @Inject constructor(
 
     @Throws(Exception::class)
     override suspend fun deleteNote(id: Int) {
-        val response = api.deleteNote()
+        val response = api.deleteNote(id)
         if (response.isSuccessful) {
             val result = response.body()
             result?.let {
@@ -48,7 +48,7 @@ class NoteRepoRemote @Inject constructor(
 
     @Throws(Exception::class)
     override suspend fun editNote(id: Int, note: Note) {
-        val response = api.editNote(NewNoteDto.fromNote(note))
+        val response = api.editNote(id, NewNoteDto.fromNote(note))
         if (response.isSuccessful) {
             val result = response.body()
             result?.let {
