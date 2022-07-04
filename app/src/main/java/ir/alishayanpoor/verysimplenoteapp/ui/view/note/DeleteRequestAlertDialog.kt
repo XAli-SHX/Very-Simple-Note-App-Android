@@ -30,12 +30,14 @@ fun DeleteRequestAlertDialog(
                 Text(text = "Are you sure about that!?")
             }, buttons = {
                 Row(Modifier.fillMaxWidth()) {
-                    OutlinedButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(6.dp),
-                        onClick = { viewModel.cancelDelete() }) {
-                        Text(text = "Cancel")
+                    if (!viewModel.state.isDeletingNote) {
+                        OutlinedButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(6.dp),
+                            onClick = { viewModel.cancelDelete() }) {
+                            Text(text = "Cancel")
+                        }
                     }
                     Button(
                         modifier = Modifier
