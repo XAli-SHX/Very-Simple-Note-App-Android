@@ -25,7 +25,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 import ir.alishayanpoor.verysimplenoteapp.ui.theme.VerySimpleNoteAppTheme
-import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.ViewOrEditOrNewNoteActivity
+import ir.alishayanpoor.verysimplenoteapp.ui.view.note.NoteActivity
 import ir.alishayanpoor.verysimplenoteapp.util.collectLatestLifecycleFlowWhenStarted
 import ir.alishayanpoor.verysimplenoteapp.util.exhaustive
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -57,15 +57,15 @@ class NoteListActivity : ComponentActivity() {
         ) { event ->
             when (event) {
                 NoteListEvent.CreateNewNote -> {
-                    Intent(this, ViewOrEditOrNewNoteActivity::class.java).also {
-                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, false)
+                    Intent(this, NoteActivity::class.java).also {
+                        it.putExtra(NoteActivity.KEY_EXTRA_VIEW_MODE, false)
                         newNoteResultLauncher.launch(it)
                     }
                 }
                 is NoteListEvent.ViewNote -> {
-                    Intent(this, ViewOrEditOrNewNoteActivity::class.java).also {
-                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, true)
-                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_NOTE, event.note)
+                    Intent(this, NoteActivity::class.java).also {
+                        it.putExtra(NoteActivity.KEY_EXTRA_VIEW_MODE, true)
+                        it.putExtra(NoteActivity.KEY_EXTRA_NOTE, event.note)
                         newNoteResultLauncher.launch(it)
                     }
                 }

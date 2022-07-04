@@ -1,4 +1,4 @@
-package ir.alishayanpoor.verysimplenoteapp.ui.view.new_note
+package ir.alishayanpoor.verysimplenoteapp.ui.view.note
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,32 +16,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewNoteViewModel @Inject constructor(
+class NoteViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
     private val createNewNoteUseCase: CreateNewNoteUseCase,
     private val editNoteUseCase: EditNoteUseCase,
 ) : ViewModel() {
 
-    var state by mutableStateOf(NewNoteState())
+    var state by mutableStateOf(NoteState())
         private set
 
-    val event = Channel<NewNoteEvent>()
+    val event = Channel<NoteEvent>()
 
-    fun onAction(action: NewNoteAction) {
+    fun onAction(action: NoteAction) {
         when (action) {
-            is NewNoteAction.Body -> enterBody(action.body)
-            is NewNoteAction.Create -> createNewNote()
-            is NewNoteAction.Tag -> enterTag(action.tag)
-            is NewNoteAction.Title -> enterTitle(action.title)
-            is NewNoteAction.SubmitTag -> submitTag()
-            is NewNoteAction.RemoveTag -> removeTag(action.index)
-            NewNoteAction.Delete -> deleteNote()
-            NewNoteAction.Edit -> editNote()
+            is NoteAction.Body -> enterBody(action.body)
+            is NoteAction.Create -> createNewNote()
+            is NoteAction.Tag -> enterTag(action.tag)
+            is NoteAction.Title -> enterTitle(action.title)
+            is NoteAction.SubmitTag -> submitTag()
+            is NoteAction.RemoveTag -> removeTag(action.index)
+            NoteAction.Delete -> deleteNote()
+            NoteAction.Edit -> editNote()
         }.exhaustive
     }
 
     private fun removeTag(index: Int) {
-        if (state.viewMode == NewNoteState.ViewMode.View)
+        if (state.viewMode == NoteState.ViewMode.View)
             return
         val prevTags = state.tags.toMutableList()
         prevTags.removeAt(index)
@@ -87,14 +87,14 @@ class NewNoteViewModel @Inject constructor(
                             id, title, body, tags
                         )
                     )
-                    event.send(NewNoteEvent.CreatedNewNote)
+                    event.send(NoteEvent.CreatedNewNote)
                 } catch (e: CreateNewNoteUseCase.InvalidNoteException) {
                     state = state.copy(
                         titleError = e.titleError,
                         bodyError = e.bodyError,
                     )
                 } catch (e: Exception) {
-                    event.send(NewNoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
+                    event.send(NoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
                 } finally {
                     state = state.copy(
                         isSendingNote = false
@@ -121,7 +121,7 @@ class NewNoteViewModel @Inject constructor(
                     state = state.copy(
                         isEditingNote = false
                     )
-                    event.send(NewNoteEvent.EditedNote)
+                    event.send(NoteEvent.EditedNote)
                 } catch (e: EditNoteUseCase.InvalidEditNoteException) {
                     state = state.copy(
                         isEditingNote = false,
@@ -129,12 +129,12 @@ class NewNoteViewModel @Inject constructor(
                         bodyError = e.bodyError,
                     )
                 } catch (e: EditNoteUseCase.NoIdAssignedException) {
-                    event.send(NewNoteEvent.FailedToCreateNote("No id assigned - internal error"))
+                    event.send(NoteEvent.FailedToCreateNote("No id assigned - internal error"))
                 } catch (e: Exception) {
                     state = state.copy(
                         isEditingNote = false,
                     )
-                    event.send(NewNoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
+                    event.send(NoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
                 }
             }
         }
@@ -146,7 +146,7 @@ class NewNoteViewModel @Inject constructor(
         )
     }
 
-    fun setViewMode(inViewMode: NewNoteState.ViewMode, note: Note?) {
+    fun setViewMode(inViewMode: NoteState.ViewMode, note: Note?) {
         state = state.copy(
             viewMode = inViewMode,
             id = note?.id,
@@ -158,13 +158,13 @@ class NewNoteViewModel @Inject constructor(
 
     fun editNoteRequested() {
         state = state.copy(
-            viewMode = NewNoteState.ViewMode.Edit
+            viewMode = NoteState.ViewMode.Edit
         )
     }
 
     fun cancelEditNote() {
         state = state.copy(
-            viewMode = NewNoteState.ViewMode.View
+            viewMode = NoteState.ViewMode.View
         )
     }
 
@@ -192,15 +192,15 @@ class NewNoteViewModel @Inject constructor(
                 state.id?.let {
                     noteRepository.deleteNote(it)
                 } ?: kotlin.run {
-                    event.send(NewNoteEvent.FailedToCreateNote("No id assigned - internal error"))
+                    event.send(NoteEvent.FailedToCreateNote("No id assigned - internal error"))
                 }
             } catch (e: Exception) {
-                event.send(NewNoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
+                event.send(NoteEvent.FailedToCreateNote(e.localizedMessage.orEmpty()))
             } finally {
                 state = state.copy(
                     isDeletingNote = false,
                 )
-                event.send(NewNoteEvent.DeletedNote)
+                event.send(NoteEvent.DeletedNote)
             }
         }
     }

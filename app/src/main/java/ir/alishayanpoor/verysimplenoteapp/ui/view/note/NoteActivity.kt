@@ -1,4 +1,4 @@
-package ir.alishayanpoor.verysimplenoteapp.ui.view.new_note
+package ir.alishayanpoor.verysimplenoteapp.ui.view.note
 
 import android.os.Bundle
 import android.widget.Toast
@@ -35,13 +35,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class ViewOrEditOrNewNoteActivity : ComponentActivity() {
+class NoteActivity : ComponentActivity() {
     companion object {
         const val KEY_EXTRA_VIEW_MODE = "viewMode"
         const val KEY_EXTRA_NOTE = "note"
     }
 
-    private val viewModel: NewNoteViewModel by viewModels()
+    private val viewModel: NoteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,21 +57,21 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
         val isInViewMode = intent.getBooleanExtra(KEY_EXTRA_VIEW_MODE, false)
         val note: Note? = intent.extras?.getParcelable(KEY_EXTRA_NOTE)
         if (isInViewMode)
-            viewModel.setViewMode(NewNoteState.ViewMode.View, note)
+            viewModel.setViewMode(NoteState.ViewMode.View, note)
     }
 
     private fun subscribeObservers() {
         collectLatestLifecycleFlowWhenStarted(viewModel.event.receiveAsFlow()) {
             when (it) {
-                is NewNoteEvent.CreatedNewNote -> finishAndLetNoteListRefresh()
-                is NewNoteEvent.FailedToCreateNote -> showFailedMessage(it)
-                is NewNoteEvent.EditedNote -> finishAndLetNoteListRefresh()
-                is NewNoteEvent.DeletedNote -> finishAndLetNoteListRefresh()
+                is NoteEvent.CreatedNewNote -> finishAndLetNoteListRefresh()
+                is NoteEvent.FailedToCreateNote -> showFailedMessage(it)
+                is NoteEvent.EditedNote -> finishAndLetNoteListRefresh()
+                is NoteEvent.DeletedNote -> finishAndLetNoteListRefresh()
             }.exhaustive
         }
     }
 
-    private suspend fun showFailedMessage(it: NewNoteEvent.FailedToCreateNote) {
+    private suspend fun showFailedMessage(it: NoteEvent.FailedToCreateNote) {
         withContext(Dispatchers.Main) {
             Toast.makeText(baseContext, it.error, Toast.LENGTH_LONG).show()
         }
@@ -102,7 +102,7 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
                     isError = viewModel.state.titleError != null,
                     error = viewModel.state.titleError ?: "",
                     readOnly = isInViewMode(),
-                    onValueChange = { viewModel.onAction(NewNoteAction.Title(it)) },
+                    onValueChange = { viewModel.onAction(NoteAction.Title(it)) },
                 )
                 OutlinedTextFieldValidation(
                     modifier = Modifier
@@ -113,7 +113,7 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
                     isError = viewModel.state.bodyError != null,
                     error = viewModel.state.bodyError ?: "",
                     readOnly = isInViewMode(),
-                    onValueChange = { viewModel.onAction(NewNoteAction.Body(it)) },
+                    onValueChange = { viewModel.onAction(NoteAction.Body(it)) },
                 )
                 TagAdder()
                 TagList()
@@ -175,10 +175,10 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
     private fun CreateEditNoteButton() {
         if (!isInViewMode()) {
             Spacer(modifier = Modifier.height(20.dp))
-            if (viewModel.state.viewMode == NewNoteState.ViewMode.Edit) {
+            if (viewModel.state.viewMode == NoteState.ViewMode.Edit) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.onAction(NewNoteAction.Edit) }) {
+                    onClick = { viewModel.onAction(NoteAction.Edit) }) {
                     if (viewModel.state.isSendingNote || viewModel.state.isEditingNote) {
                         CircularProgressIndicator(
                             color = Color.White,
@@ -191,7 +191,7 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
             } else {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.onAction(NewNoteAction.Create) }) {
+                    onClick = { viewModel.onAction(NoteAction.Create) }) {
                     if (viewModel.state.isSendingNote || viewModel.state.isEditingNote) {
                         CircularProgressIndicator(
                             color = Color.White,
@@ -214,7 +214,7 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
                     Button(
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
                         shape = RoundedCornerShape(50),
-                        onClick = { viewModel.onAction(NewNoteAction.RemoveTag(i)) }) {
+                        onClick = { viewModel.onAction(NoteAction.RemoveTag(i)) }) {
                         Text(text = it)
                         if (!isInViewMode()) {
                             Icon(Icons.Filled.Close, contentDescription = "Remove Tag")
@@ -238,14 +238,14 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
                     label = { Text(text = "Tag") },
                     value = viewModel.state.tag,
                     readOnly = isInViewMode(),
-                    onValueChange = { viewModel.onAction(NewNoteAction.Tag(it)) },
+                    onValueChange = { viewModel.onAction(NoteAction.Tag(it)) },
                 )
 
                 Button(
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
-                    onClick = { viewModel.onAction(NewNoteAction.SubmitTag) }) {
+                    onClick = { viewModel.onAction(NoteAction.SubmitTag) }) {
                     Text(text = "Add Tag")
                 }
             }
@@ -255,13 +255,13 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     private fun EditAndDeleteIcons() {
-        if (viewModel.state.viewMode == NewNoteState.ViewMode.Edit) {
+        if (viewModel.state.viewMode == NoteState.ViewMode.Edit) {
             IconButton(
                 onClick = { viewModel.cancelEditNote() }) {
                 Icon(Icons.Filled.Close, contentDescription = "Cancel editing")
             }
         }
-        if (viewModel.state.viewMode == NewNoteState.ViewMode.View) {
+        if (viewModel.state.viewMode == NoteState.ViewMode.View) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 IconButton(
                     onClick = { viewModel.editNoteRequested() }) {
@@ -278,6 +278,6 @@ class ViewOrEditOrNewNoteActivity : ComponentActivity() {
         }
     }
 
-    private fun isInViewMode() = viewModel.state.viewMode == NewNoteState.ViewMode.View
+    private fun isInViewMode() = viewModel.state.viewMode == NoteState.ViewMode.View
 
 }

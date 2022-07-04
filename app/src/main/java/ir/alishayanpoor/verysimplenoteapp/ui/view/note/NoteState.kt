@@ -1,6 +1,6 @@
-package ir.alishayanpoor.verysimplenoteapp.ui.view.new_note
+package ir.alishayanpoor.verysimplenoteapp.ui.view.note
 
-data class NewNoteState(
+data class NoteState(
     val id: Int? = null,
     val title: String = "",
     val viewMode: ViewMode = ViewMode.New,
