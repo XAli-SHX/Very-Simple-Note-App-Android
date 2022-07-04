@@ -47,7 +47,7 @@ fun DeleteRequestAlertDialog(
                         if (viewModel.state.isDeletingNote) {
                             CircularProgressIndicator(
                                 color = Color.White,
-                                modifier = Modifier.fillMaxHeight()
+                                modifier = Modifier.size(40.dp)
                             )
                         } else {
                             Text(text = "Delete")
