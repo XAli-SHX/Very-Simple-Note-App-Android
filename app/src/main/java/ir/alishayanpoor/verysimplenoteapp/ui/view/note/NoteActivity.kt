@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -20,11 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint
-import ir.alishayanpoor.verysimplenoteapp.R
 import ir.alishayanpoor.verysimplenoteapp.domain.model.Note
 import ir.alishayanpoor.verysimplenoteapp.ui.component.OutlinedTextFieldValidation
 import ir.alishayanpoor.verysimplenoteapp.ui.theme.VerySimpleNoteAppTheme
@@ -92,7 +89,7 @@ class NoteActivity : ComponentActivity() {
                     .padding(20.dp)
             ) {
                 EditAndDeleteIcons()
-                DeleteRequestAlertDialog()
+                DeleteRequestAlertDialog(viewModel)
                 OutlinedTextFieldValidation(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -119,55 +116,6 @@ class NoteActivity : ComponentActivity() {
                 TagList()
                 CreateEditNoteButton()
             }
-        }
-    }
-
-    @Composable
-    private fun DeleteRequestAlertDialog() {
-        if (viewModel.state.deleteRequested) {
-            AlertDialog(onDismissRequest = { viewModel.cancelDelete() },
-                title = {
-                    Row(Modifier.fillMaxWidth()) {
-                        Icon(
-                            Icons.Filled.Delete,
-                            contentDescription = "Delete Confirmation"
-                        )
-                        Text(text = "Delete Note")
-                    }
-                }, text = {
-                    Text(text = "Are you sure about that!?")
-                }, buttons = {
-                    Row(Modifier.fillMaxWidth()) {
-                        OutlinedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(6.dp),
-                            onClick = { viewModel.cancelDelete() }) {
-                            Text(text = "Cancel")
-                        }
-                        Button(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(6.dp),
-                            onClick = { viewModel.deleteNote() }) {
-                            if (viewModel.state.isDeletingNote) {
-                                CircularProgressIndicator(
-                                    color = Color.White,
-                                    modifier = Modifier.fillMaxHeight()
-                                )
-                            } else {
-                                Text(text = "Delete")
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Image(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(id = R.drawable.john_cena),
-                                    contentDescription = "John cena is saying are you sure about that"
-                                )
-                            }
-                        }
-                    }
-                }
-            )
         }
     }
 
