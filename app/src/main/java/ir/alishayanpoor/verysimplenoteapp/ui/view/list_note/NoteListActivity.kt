@@ -20,13 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dagger.hilt.android.AndroidEntryPoint
 import ir.alishayanpoor.verysimplenoteapp.ui.theme.VerySimpleNoteAppTheme
-import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.ViewOrNewNoteActivity
+import ir.alishayanpoor.verysimplenoteapp.ui.view.new_note.ViewOrEditOrNewNoteActivity
 import ir.alishayanpoor.verysimplenoteapp.util.collectLatestLifecycleFlowWhenStarted
 import ir.alishayanpoor.verysimplenoteapp.util.exhaustive
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -58,15 +57,15 @@ class NoteListActivity : ComponentActivity() {
         ) { event ->
             when (event) {
                 NoteListEvent.CreateNewNote -> {
-                    Intent(this, ViewOrNewNoteActivity::class.java).also {
-                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, false)
+                    Intent(this, ViewOrEditOrNewNoteActivity::class.java).also {
+                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, false)
                         newNoteResultLauncher.launch(it)
                     }
                 }
                 is NoteListEvent.ViewNote -> {
-                    Intent(this, ViewOrNewNoteActivity::class.java).also {
-                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, true)
-                        it.putExtra(ViewOrNewNoteActivity.KEY_EXTRA_NOTE, event.note)
+                    Intent(this, ViewOrEditOrNewNoteActivity::class.java).also {
+                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_VIEW_MODE, true)
+                        it.putExtra(ViewOrEditOrNewNoteActivity.KEY_EXTRA_NOTE, event.note)
                         newNoteResultLauncher.launch(it)
                     }
                 }
@@ -74,7 +73,6 @@ class NoteListActivity : ComponentActivity() {
         }
     }
 
-    @Preview(showBackground = true)
     @Composable
     fun MainView() {
         Box(

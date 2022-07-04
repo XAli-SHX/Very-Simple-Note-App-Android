@@ -7,4 +7,6 @@ sealed class NewNoteAction {
     object SubmitTag : NewNoteAction()
     data class RemoveTag(val index: Int) : NewNoteAction()
     object Create : NewNoteAction()
+    object Edit : NewNoteAction()
+    object Delete : NewNoteAction()
 }

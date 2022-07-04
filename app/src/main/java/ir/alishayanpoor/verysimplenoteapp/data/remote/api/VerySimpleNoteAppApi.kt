@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 const val BASE_URL = "https://api.alishayanpoor.ir/Very-Simple-Note-App/api/v1/"
 
@@ -21,9 +22,10 @@ interface VerySimpleNoteAppApi {
 
     @POST("note/edit/{id}")
     suspend fun editNote(
-        @Body newNoteDto: NewNoteDto
+        @Path("id") id: Int,
+        @Body newNoteDto: NewNoteDto,
     ): Response<JsonObject>
 
     @POST("note/delete/{id}")
-    suspend fun deleteNote(): Response<JsonObject>
+    suspend fun deleteNote(@Path("id") id: Int): Response<JsonObject>
 }
